@@ -1,4 +1,2 @@
-rProvenance
-===========
-
-A prototype for a provenance library implementation in R
+`rProv`
+An implementation of a provenance model for `R`. Package is currently in early development. 
