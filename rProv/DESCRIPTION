@@ -1,0 +1,18 @@
+Package: rProv
+Type: Package
+Title: Provenance tracking in R
+Version: 0.01
+Date: 2012-09-20
+Author: Karthik Ram, Duncan Temple Lang.
+Maintainer: Karthik Ram <karthik.ram@gmail.com>
+Description: An R package that provides methods to generate, query and
+    visualize provenance traces from any programmatic analysis.
+URL: https://github.com/karthikram/rProvenance
+Bugs: https://github.com/karthikram/rProvenance/issues
+License: CC0
+Depends:
+	RJSONIO,
+	plyr,
+	ggplot2
+Collate:
+    'about_rProv.R'
