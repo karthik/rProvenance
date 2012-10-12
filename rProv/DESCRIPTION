@@ -10,9 +10,8 @@ Description: An R package that provides methods to generate, query and
 URL: https://github.com/karthikram/rProvenance
 Bugs: https://github.com/karthikram/rProvenance/issues
 License: CC0
-Depends:
-	RJSONIO,
-	plyr,
-	ggplot2
-Collate:
-    'about_rProv.R'
+Imports: methods 
+# Depends: RJSONIO, plyr, ggplot2
+
+
+

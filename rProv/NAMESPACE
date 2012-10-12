@@ -1,1 +1,9 @@
+import(methods)
+
 export(about_rProv)
+
+export(startProv, provCallback)
+exportClass(Task, AssignTask, SubAssignTask,
+            PlotTask, GRZPlotTask, LatticePlotTask,
+            ProvenanceTask)
+
