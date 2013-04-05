@@ -1,0 +1,31 @@
+
+* accessing data from local files, e.g. CSV
+   read.table(), read.csv()
+   readLines()
+
+   reading data in blocks.
+
+* accessing data from URLs
+   connections, read.table(), read.csv()
+   capture
+
+* Web Services
+   REST APIs
+   SOAP
+
+   keys, passwords, etc.
+
+   accessing header information of the response.
+
+* accessing data from RDBMS
+  
+
+* sampling schemes
+
+
+* Basic information
+  sessionInfo()
+  RNG
+  environment variables
+
+  parallel RNG if parallel package attached (and in use)

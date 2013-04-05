@@ -55,3 +55,15 @@ function()
 {
    lapply(rnorm(10, 100), function(x) branch(x))
 }
+
+
+npBootstrap =
+function(expr, data, B = 999)
+{
+  e = new.env(parent = globalenv())
+  replicate(B, {
+              i = sample(1:nrow(data), nrow(data), replace = TRUE)
+              e$data = data[i,]
+              eval(expr, i)
+            })
+}

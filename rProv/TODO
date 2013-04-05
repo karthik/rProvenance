@@ -1,0 +1,34 @@
+
+Mechanism to instrument dynamic/run-time capturing
+of provenance, i.e. call stack on the returned objects and local variables.
+
+top-level task provenance  - i.e. startProv 
+   capture call, timestamp, .Random.seed, 
+     reference sessionInfo, pid,  (or keep copy in each object)
+
+Write the provenance to centralized storage
+   R environment
+   directory
+   S3 bucket
+   Dropbox folder
+
+Meta data in PNG files
+  See my version of Simon U's png package.
+   plotPNG in this package that depends on my version of that package for now.
+
+Query provenance
+   See inst/doc/ProvenanceQuestions
+     Add more example questions
+
+CodeDepends
+  Analyze code statically
+  Capture provenance from that
+  Visualize script, dependencies, workflow
+  Answer queries about flow/provenance
+  Run up to
+
+  Much of this is conceptually already in CodeDepends, but 
+  first thing is to ensure it works
+
+
+
