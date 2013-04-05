@@ -3,7 +3,11 @@
 # 
 
 getProvURL <-
+  #
+  #
+  #
+  #
 function()
 {
-  as.character(NA)
+  getOption("SessionProvenanceURL", NA)
 }

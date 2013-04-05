@@ -23,7 +23,7 @@
   one cannot add content to the plot within after this call.
 }
 \usage{
-pngPlot(code, file = character(), ..., meta = getSessionProvInfo())
+pngPlot(code, file = character(), ..., meta = getSessionProvInfo(substitute(code)))
 }
 \arguments{
   \item{code}{the R code to create the entire plot}

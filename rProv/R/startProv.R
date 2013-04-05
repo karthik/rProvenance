@@ -14,7 +14,7 @@ provCallback =
   #
   # Create the callback for addTaskCallback() along with accessor and control functions
   # Uses lexical scoping to collect and manage the list of tasks.
-function()
+function(store = NULL)
 {
   tasks = list()
   suspended = FALSE

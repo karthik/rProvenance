@@ -1,2 +1,28 @@
 
-Does the 
+* What was the sequence of commands used to create this object?
+* When was this object last updated?
+* Who created this object and on what type of machine?
+* What versions of the different packages were used when computing this object?
+* What actual functions and packages were used when creating this object?
+  Not just what functions were mentioned in all of the code, but which ones were actually used.
+* If we modify variable d, what other variables need to be updated?
+* Same for functions, i.e. if we find a bug in a function f, what results become suspect? All of them
+  or can we determine which objects were computed using that function, perhaps even a particular expression/"line of code" in the function?
+
+* When we read data from a file, capture the state of that file.
+* When we are reading blocks from a connection, we would like to know
+  the beginning and end/number of bytes.
+* When we read from a URL, etc. we want to capture the time and possibly the header information
+  of the response. 
+* When we access a URL, we may need a cookie or token.
+
+* How can we handle shell commands and know whether they would change if we ran them again
+  Dependencies similar to make, but hard to capture comprehensively
+    e.g. count = system("wc -l *.csv", intern = TRUE)
+         n = as.integer(gsub("total", "", count))
+
+       If we knew the directory, we could capture its state.
+       If we knew the file pattern (*.csv), we could capture their collective state and then determine if it has changed.
+
+
+

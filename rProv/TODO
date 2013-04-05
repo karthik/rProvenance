@@ -1,4 +1,3 @@
-
 Mechanism to instrument dynamic/run-time capturing
 of provenance, i.e. call stack on the returned objects and local variables.
 
@@ -15,6 +14,7 @@ Write the provenance to centralized storage
 Meta data in PNG files
   See my version of Simon U's png package.
    plotPNG in this package that depends on my version of that package for now.
+   Add information about how to decode each of the metadata elements.
 
 Query provenance
    See inst/doc/ProvenanceQuestions

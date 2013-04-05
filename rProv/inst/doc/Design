@@ -1,0 +1,50 @@
+<doc>
+<para>
+There are two approaches to gathering provenance information -
+run-time and static code analysis.
+</para>
+
+
+
+<section>
+<title>Run-time</title>
+<para>
+Run-time provenance capturing works 
+by monitoring top-level commands/expressions and collecting
+information about each of these. 
+As each interactive command is evaluated,
+we store information about it such as
+the expression, the time, the type and class of the result.
+We can add this information to the result if
+the expression is an assignment.
+</para>
+
+<para>
+By storing the history of calls,
+we can then use the static code analysis
+described below to compute the provenance information
+about the workflow after the event.
+</para>
+
+
+</section>
+
+
+<section>
+<title>Static Code Analysis</title>
+
+<para>
+We can use code analysis when we have a script and
+want to know what will happen when we run the code
+and what objects will be created and from which
+expressions and what inputs.
+</para>
+
+
+<para>
+
+</para>
+
+
+</section>
+</doc>
