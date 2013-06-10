@@ -41,6 +41,6 @@ setMethod("getConnectionState", "connection",
                info$info = file.info(x)
              
              info
-           }
+           })
            
   
