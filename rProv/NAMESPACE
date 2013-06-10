@@ -1,4 +1,7 @@
 import(methods)
+import(CodeDepends)
+import(codetools)
+
 import(png) # My modified version supporting metadata.
 
 export(about_rProv)
@@ -12,3 +15,13 @@ export(pngPlot)
 export(getSessionProvInfo)
 
 
+# Currently internal:  getCommands, getInputVariables
+export(provSave)
+
+export(getProvInfo, setProvInfo)
+
+export(creator, when, sys, session, pid, rng)
+
+export(addProvenance)
+
+export(traceProv, provenanceTrace)

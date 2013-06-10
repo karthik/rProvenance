@@ -1,19 +1,65 @@
-
 * What was the sequence of commands used to create this object?
+   We can get this information from the sequence of Task objects
+   or from the objects themselves.
+   We can work with a collection of objects and Script obejct
+   or one expression at a time.
+   For example, consider the file inst/samples/formula.R file. 
+   We run this code (line-by-line) and then save fit1.
+   We can save all the objects on which it depends also with
+     provSave(fit1, file = "/tmp/fit1.rda") 
+   This saves x, y, d and fit1.
+
+   When we load this into another R session, we can query how fit1 was
+   created.
+   print(load("/tmp/fit1.rda"))
+   getCommands(fit1)
+
+   We should return the random.seed if necessary as an extra
+   expression.
+
+   If we don't want to store all of the variables that were used to
+   create an object, we can just store the object and the commands
+   use to create those other variables and this object:
+    provSave(fit1, file = "/tmp/fit1.rda", depends = TRUE) 
+    load("/tmp/fit1.rda")
+    info = getProvInfo(fit1)
+    info$command
+    invisible(lapply(info$command, eval, globalenv()))
+
+
 * When was this object last updated?
+   Now stored in each object, and also in the task information.
+   when()
+
 * Who created this object and on what type of machine?
+   Now stored in each object along with the system information.
+   creator()
+
 * What versions of the different packages were used when computing this object?
+    Now stored in each object as part of the sessionInfo() object.
+    session()
+
 * What actual functions and packages were used when creating this object?
-  Not just what functions were mentioned in all of the code, but which ones were actually used.
+   Not just what functions were mentioned in all of the code, but which ones were actually used.
+
 * If we modify variable d, what other variables need to be updated?
+   getPropagateChanges("d", sc, recursive = TRUE) 
+
 * Same for functions, i.e. if we find a bug in a function f, what results become suspect? All of them
   or can we determine which objects were computed using that function, perhaps even a particular expression/"line of code" in the function?
+   ALl this information can come from CodeDepends and getInputs() on each expression.
+
+* Trace provenance within functions.
+   Some code already there.
 
 * When we read data from a file, capture the state of that file.
-* When we are reading blocks from a connection, we would like to know
-  the beginning and end/number of bytes.
+   i.e. the file size, etc.  file.info(). Where do we put this information?
+
+* When we are reading blocks from a connection, we would like to know the beginning and end/number of bytes.
+
 * When we read from a URL, etc. we want to capture the time and possibly the header information
   of the response. 
+
 * When we access a URL, we may need a cookie or token.
 
 * How can we handle shell commands and know whether they would change if we ran them again

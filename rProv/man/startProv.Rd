@@ -15,13 +15,18 @@
 }
 \usage{
 startProv(cb = provCallback())
-provCallback()
+provCallback(store = NULL, addToObject = TRUE)
 }
 \arguments{
   \item{cb}{a list of functions or a single function object with an
     element named handler. This used to register a function with
     \code{\link[base]{addTaskCallback}}.
-    }
+  }
+  \item{store}{currently ignored. The purpose of this in the long term
+    is to specify a \code{directory} where objects should be serialized,
+  be it a local directory, a URL, a dropbox folder and so on.}
+  \item{addToObject}{a logical value that controls whether we add the
+    provenance information to each object assigned at the top-level.}
 }
 
 \value{

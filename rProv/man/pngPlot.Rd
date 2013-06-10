@@ -53,8 +53,8 @@ Duncan Temple Lang
 }
 \seealso{
   \code{\link[grDevices]{png}},
-  \code{\link[png]{pngRead}}
-  \code{\link[png]{pngWrite}}
+  \code{\link[png]{readPNG}}
+  \code{\link[png]{writePNG}}
 }
 \examples{
   o = pngPlot(plot(rnorm))

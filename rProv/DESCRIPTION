@@ -10,7 +10,7 @@ Description: An R package that provides methods to generate, query and
 URL: https://github.com/karthikram/rProvenance
 Bugs: https://github.com/karthikram/rProvenance/issues
 License: CC0
-Imports: methods, png
+Imports: methods, png, CodeDepends, codetools
 # Depends: RJSONIO, plyr, ggplot2
 
 

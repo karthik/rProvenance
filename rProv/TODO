@@ -11,7 +11,7 @@ Write the provenance to centralized storage
    S3 bucket
    Dropbox folder
 
-Meta data in PNG files
+[done] Meta data in PNG files
   See my version of Simon U's png package.
    plotPNG in this package that depends on my version of that package for now.
    Add information about how to decode each of the metadata elements.
@@ -22,10 +22,11 @@ Query provenance
 
 CodeDepends
   Analyze code statically
+  Also use for analysis of expressions issued at run-time, i.e. interactively
   Capture provenance from that
   Visualize script, dependencies, workflow
   Answer queries about flow/provenance
-  Run up to
+  [Done] Run up to a particular variable - sourceVariable()
 
   Much of this is conceptually already in CodeDepends, but 
   first thing is to ensure it works
