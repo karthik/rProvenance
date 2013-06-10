@@ -53,7 +53,9 @@
    Some code already there.
 
 * When we read data from a file, capture the state of that file.
-   i.e. the file size, etc.  file.info(). Where do we put this information?
+   i.e. the file size, etc.  file.info(). Where do we put this
+   information?
+   See provenanceTrace( files = ...)
 
 * When we are reading blocks from a connection, we would like to know the beginning and end/number of bytes.
 

@@ -65,6 +65,12 @@ provenanceTrace =
   #
   #  Grab the process id, time stamp, etc.  See getSessionProvInfo().
   #
+  #
+  #  op can be the name of a function or an actual call. For a call, the first
+  #  argument will be replaced by the actual expression giving the object whose
+  #  provenance we want.
+  # See connections.R
+  #
 
 function(fun, op = as.name("addProvenance"), enter = NULL,
          addLoopCounters = containsLoops(fun),
@@ -130,7 +136,7 @@ function(expr, op, last = FALSE, addLoopCounters = FALSE, files = character(), .
       setProvCall.for(expr, op, last, addLoopCounters = addLoopCounters, files = files, ...)
     else if(is(expr, "while"))
       setProvCall.while(expr, op, last, addLoopCounters = addLoopCounters, files = files, ...)
-    else if(is(expr, "="))
+    else if(is(expr, "=") || is.call(expr) && as.character(expr[[1]]) == "<-")
       `setProvCall.=`(expr, op, last, addLoopCounters = addLoopCounters, files = files, ...)
     else if(is(expr, "{"))
       setProvCall.list(expr, op, last, addLoopCounters = addLoopCounters, files = files, ...)
@@ -145,10 +151,14 @@ setProvCall.symbol = setProvCall.name =
 function(expr, op, last = FALSE, addLoopCounters = FALSE, files = character(), ...)
 {
   if(last) {
-    e = substitute(op(expr, sys.calls(), sys.frames(), sys.nframe()), list(expr = expr, op = op))
-    if(length(files)) 
-      e[["files"]] = as.name(files)
-
+    if(is.call(op)) {
+      op[[2]] = expr
+      e = op
+    } else {
+      e = substitute(op(expr, sys.calls(), sys.frames(), sys.nframe()), list(expr = expr, op = op))
+      if(length(files)) 
+        e[["files"]] = as.name(files)
+    }
 
     if(addLoopCounters)
       e[[length(e) + 1]] = quote(addLoopCounters)
@@ -242,7 +252,8 @@ addProvenance =
   # to add to expressions in functions to return an object along
   # with provenance information.
   #
-function(obj, calls = sys.calls(), frames = sys.frames(), nframe = sys.nframe(), files = NULL, ...)
+function(obj, calls = sys.calls(), frames = sys.frames(), nframe = sys.nframe(), files = NULL,
+          .conInitialState = NULL, ...)
 {
   info = list(timestamp =  Sys.time(),
                         call = calls[[nframe]],
@@ -250,6 +261,9 @@ function(obj, calls = sys.calls(), frames = sys.frames(), nframe = sys.nframe(),
 
   if(length(files)) 
     info$files = structure(lapply(files, getFileProvenance), names = files)
+
+  if(length(.conInitialState))
+    info$connectionState = .conInitialState
   
   setProvInfo(obj, info)
 }

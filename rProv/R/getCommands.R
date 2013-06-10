@@ -11,15 +11,16 @@ getCommands =
   #
 function(obj,  info = getProvInfo(obj), recursive = TRUE, name = deparse(substitute(obj)))
 {
-  inputs = getInputs(parse(text = info$command))
+  expr = info$command # parse(text = info$command)
+  inputs = getInputs(expr)
   vars = inputs@inputs
   ans = list()
-  ans[[name]] = parse(text = info$command)
+  ans[[name]] = expr
   while(length(vars)) {
       v = vars[1]
       vars = vars[-1]
       val = get(v)
-      cmd <- ans[[v]] <- parse(text = getProvInfo(val)$command)
+      cmd <- ans[[v]] <- getProvInfo(val)$command # parse(text = )
       inputs = getInputs(cmd)
       vars <- c(vars, inputs@inputs) 
   }

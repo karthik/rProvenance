@@ -1,7 +1,21 @@
+When modifying a subset/sub-element of an object,  cumulate the commands so that we can see the original creation command
+ So handle any assignment function, e.g. xmlAttrs<-(), attrs<-().
+
+[Fixed] Why is the when stored as a character?
+[Fixed] Why is command not parsed.
+
+Actions on the capturing of file information.
+  i.e. write some functions that check if the file has changed.
+
+Capture some (or all) of the inputs to a function.
+
 Mechanism to instrument dynamic/run-time capturing
 of provenance, i.e. call stack on the returned objects and local variables.
+  provenanceTrace()
+   Add functionality to capture all the local arguments.
 
-top-level task provenance  - i.e. startProv 
+
+[done] top-level task provenance  - i.e. startProv 
    capture call, timestamp, .Random.seed, 
      reference sessionInfo, pid,  (or keep copy in each object)
 

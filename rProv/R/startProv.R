@@ -34,7 +34,7 @@ function(store = NULL, addToObject = TRUE)
         varName = getVarName(expr[[2]])
         where = find(varName)
         obj = get(varName, where)
-        attr(obj, "provenanceInfo") = getSessionProvInfo(expr) 
+        obj = setProvInfo(obj, getSessionProvInfo(expr))
         assign(varName, obj, where)
       }
     }

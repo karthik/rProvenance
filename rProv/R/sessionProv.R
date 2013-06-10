@@ -7,10 +7,10 @@ getSessionProvInfo <-
 function(code = character(), ..., .meta = list(...))
 {  
   if(length(code)) 
-    .meta[["command"]] = paste(deparse(code), collapse = "\n")
+    .meta[["command"]] = code # paste(deparse(code), collapse = "\n")
 
-  .meta[["when"]] = as.character(Sys.time())
-  .meta[["pid"]] = as.character(Sys.getpid())
+  .meta[["when"]] = Sys.time()
+  .meta[["pid"]] = Sys.getpid()
   .meta[["user"]] = Sys.info()[["login"]]
   .meta[["R.sessionInfo"]] = sessionInfo()  # png:::serializeBase64(sessionInfo())
   .meta[["R.systemInfo"]] = Sys.info()  # png:::serializeBase64(sessionInfo())  

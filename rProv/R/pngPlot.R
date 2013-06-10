@@ -26,7 +26,7 @@ function(code, file = character(), ...,
   data = readPNG(file)
 
   if(!toRaw)
-    .meta[["file"]] = as.character(file)
+    meta[["file"]] = as.character(file)
   
   ans = writePNG(data, if(toRaw) raw() else file, meta = meta)
   invisible(if(toRaw)

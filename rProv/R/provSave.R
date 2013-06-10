@@ -38,9 +38,10 @@ getInputVariables =
   #  by traversing the provenance information it contains and the information
   #  in these other objects.
   #
-function(obj,  info = getProvInfo(obj), recursive = TRUE, objects = new.env(parent = emptyenv()))  
+function(obj,  info = getProvInfo(obj), recursive = TRUE,
+         objects = new.env(parent = emptyenv()))  
 {
-  inputs = getInputs(parse(text = info$command))
+  inputs = getInputs(info$command)
   vars = inputs@inputs
 
   for(v in vars) {

@@ -8,8 +8,16 @@ function(obj)
 }
 
 setProvInfo =
-function(obj, info)
+function(obj, info = getSessionProfInfo())
 {
+   # keep any fields already there that are not in info.
+  old = getProvInfo(obj)
+  if(!is.null(old)) {
+    ids = setdiff(names(old), names(info))
+    if(length(ids))
+      info[ids] = old[ids]
+  }
+  
   attr(obj, "provenanceInfo") <- info
   obj
 }

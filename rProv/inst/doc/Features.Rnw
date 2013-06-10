@@ -1,0 +1,333 @@
+\documentclass[a4paper]{article}
+\usepackage[british]{babel}
+\begin{document}
+
+This is just an effort to provide some
+documentation for some of the features in the
+\Rpkg{rProv} package.
+
+
+\section{Enabling Provenance Capture}
+We can capture information about
+objects we create at the top-level
+evaluation prompt using \Rfunc{startProv}.
+<<>>=
+cb = startProv()
+
+@ 
+We assign the result of the call to \Rfunc{startProv}
+so that we can access the task objects later.
+Not everyone will need this.
+
+\Rfunc{startProv} adds a hook to \R's evaluator that is called at the
+conclusion of each top-level \R{} command.
+By default, our provenance hook 
+examines each top-level expression and
+result and adds information about when and how it was created.
+Suppose we enter the following two commands at the \R{} prompt:
+<<>>=
+x = rnorm(100)
+y = 3 + 7 * x + length(x)
+
+@ 
+We can use \Rfunc{getProvInfo} to retrieve the provenance information.
+<<>>=
+names(getProvInfo(x))
+
+@ 
+We capture a lot of the same information in each
+object, e.g. the session information, system details.
+We do this so that each object is self-describing.
+If we serialize an object via \Rfunc{save}, it will have all of this information.
+
+We might chose to add this information when we serialize one or more
+related objects.  We can use \Rfunc{provSave} to serialize an object
+along with its provenance information and also either
+i) the objects from which it was created, or 
+ii) information about how to recreate the object and the objects on which it
+depends.
+For example, 
+<<>>=
+d = data.frame(x = x, y = y)
+fit = lm(y ~ x, d)
+
+provSave(fit, "fit.rda")
+
+@ 
+When we deserialize this, we get back all of the objects.
+<<>>=
+e = new.env()
+load("fit.rda", envir = e)
+ls(e)
+
+@ 
+Instead of serializing all of the objects on which \Rvar{fit}
+depends, we can use
+<<>>=
+provSave(fit, "fit.rda", dependsCommandsOnly = TRUE)
+
+@ 
+The resulting \ext{rda} file contains
+only the object we serialized, but 
+its provenance information contains the
+code to recreate it.
+(Currently we don't utilize the random seed, but that
+is relatively easy to add.)
+<<>>=
+e = new.env()
+load("fit.rda", envir = e)
+ls(e)
+
+@ 
+<<>>=
+expr = getProvInfo(e$fit)$command
+lapply(expr, eval, globalenv())
+
+@ 
+We can make these much easier to use.
+For now, they are they way they are because we have to decide
+what the default workflow should be.
+The existing infrastructure allows us to do all of these
+things. \Rpkg{CodeDepends} allows us to do the analysis
+statically or run-time and at differnt points  during
+run-time.
+
+
+@
+If we change \Rvar{x}, we can determine
+what other objects need to be updated.
+We can approach this from various different starting
+points. We can 
+a) search all objects for their provenance information and
+compute the dependencies from these,
+b) read the code from a file and create a script object
+and compute the dependencies,
+or c) use the history to compute a script.
+<<>>=
+sc = historyAsScript()
+sc.info = getInputs(sc)
+
+@ 
+Now we can determine what needs to be updated if \Rvar{x} changes:
+<<>>=
+getPropagateChanges("x", sc, recursive = TRUE)
+
+@ 
+We can check the time stamp on the dependencies
+with
+<<>>=
+getProvInfo(x)[["when"]]
+getProvInfo(y)[["when"]]
+
+getProvInfo(x)[["when"]] > getProvInfo(y)[["when"]]
+
+
+@ 
+If the code came from a script, then we can analyze that
+directly rather than using the history.
+We use \Rfunc{readScript} in place of \Rfunc{historyAsScript}.
+
+@
+We might have the objects but not the commands use to create
+them. Assuming they have their provenance information, we
+can retrieve this information.
+<<>>=
+expr = lapply(ls(), function(var) { 
+                      cmd = getProvInfo(get(var))[["command"]]
+                      if(length(cmd))
+                        parse(text = cmd)
+                    })
+sc = new("Script", expr)
+
+@ 
+Now we can use this to compute dependencies, etc.
+
+@ 
+\section{Adding Provenance Information to Plots}
+
+In the same vein as objects being self-describing, it is useful to
+have a plot created by R be self-describing.  We can do this by adding
+information to the plot's file as meta-data.  We have extended Simon
+Urbanek's \Rpkg{png} package to allow reading and writing arbitrary
+content to PNG files.
+Consider the simple plot
+<<>>=
+plot(x, y)
+
+@ 
+We could store it as a PNG file with
+<<>>=
+png("myplot.png")
+plot(x, y)
+dev.off()
+
+@ 
+tmp = readPNG("myplot.png")
+info = c(date = as.character(Sys.time()),
+         user = Sys.info()["login"],
+         os = Sys.info()["version"]
+        )
+writePNG(tmp, "myplot.png", meta = info)
+
+@
+We can query this meta-data with
+<<>>=
+readPNG("myplot.png", metadata = TRUE)$metadata
+
+
+@
+A simpler and better way to create the plot and add the meta-data
+is to use \Rfunc{pngPlot}
+<<>>=
+pngPlot(plot(x, y), "myplot.png")
+
+@ 
+\Rfunc{plotPNG} takes any \R{} expression or collection
+of expressions in { and evaluates it within
+a call to \Rfunc{png} and \Rfunc{dev.off} and
+then adds meta-data to the resulting file.
+
+@
+info = readPNG("myplot.png", metadata = TRUE)$metadata
+names(info)
+
+@ 
+Some of these fields are simple strings, e.g.
+<<>>=
+info$when
+
+@ 
+However, some are rich \R{} objects.
+These are stored by serializing the object and converting the result to base64.
+For example, the \Rel{R.sessionInfo} element is the result of a call
+to \Rfunc{sessionInfo} when the plot was created. We can restore it with
+<<>>=
+library(RCurl)
+unserialize(base64Decode(info["R.sessionInfo"], "raw"))
+
+@ 
+We can make this much more transparent.
+We can also use different base64  functionality to avoid relying on 
+\Rpkg{RCurl}.
+
+
+
+
+\section{Adding Provenance Tracing to a Function}
+So far we have focused on top-level commands and variables created
+at the prompt.
+We sometimes want to deal with commands that are run via \Rfunc{source}
+as top-level commands, i.e. getting individual provenance information
+about them rather than for the single \Rfunc{source} command.
+We'll ignore this for the present.
+Instead, here we will look at how we can add information to a function
+to capture information about how its return value was computed.
+
+Suppose we have the following function
+to implement a 2-dimensional random walk
+<<>>=
+rw2d =
+function(n = 100000) {
+    xsteps = c(-1,  1,  0,  0)
+    ysteps = c( 0,  0, -1,  1)
+    dir = sample(1:4, n - 1, replace = TRUE)
+    xpos = c(0, cumsum(xsteps[dir]))
+    ypos = c(0, cumsum(ysteps[dir]))
+    list(x = xpos, y = ypos)
+}
+
+
+@ 
+Suppose we want the result to also contain
+provenance information.
+We could change the last line to 
+<<eval=FALSE>>=
+ setProvInfo(list(x = xpos, y = ypos), getSessionProvInfo())
+
+
+@ 
+We can, of course, add this ourselves.
+However, we can do it programmatically with
+\Rfunc{provenanceTrace}.
+<<>>=
+provenanceTrace(rw2d)
+
+@ 
+The result is a the return value is
+<<>>=
+addProvenance(list(x = xpos, y = ypos), sys.calls(), sys.frames(), 
+        sys.nframe())
+
+@ 
+\Rfunc{provenanceTrace} allows us to specify
+any function to call to add the provenance information.
+By default, we use the \Rfunc{addProvenance} function.
+This is like
+\Rfunc{setProvInfo} but also 
+incorporates information from the call stack.
+
+
+
+\section{Working with Files}
+One  of the ideas underlying the provenance information
+we capture is to be able to determine when an object
+is out-of-date.
+As we saw above, if we change \Rvar{x}, we should update
+\Rvar{y}, \Rvar{d} and \Rvar{fit}.
+But what about when we read data from a file outside of \R.
+For example, we'll use the simple wrapper function
+\Rfunc{readData} which can read from an RDA or a CSV file.
+(We use this here so that we don't have to modify a function
+in a package.)
+<<>>=
+source(system.file("sampleFuns",  "readData.R", package = "rProv"))
+readData
+
+@ 
+Let's add provenance tracking to this function with
+<<>>=
+readData = provenanceTrace(readData)
+readData
+
+@ 
+Note that \Rfunc{provenanceTrace} added code to each
+of the expressions that could yield the return value,
+i.e. the final expression in the if and else components.
+
+@
+We would also like to capture the information about 
+\Rarg{filename}. We can do this with the \Rarg{files}
+parameter of \Rfunc{provenanceTrace}:
+<<>>=
+source(system.file("sampleFuns",  "readData.R", package = "rProv"))
+readData = provenanceTrace(readData, files = "filename")
+readData
+
+@ 
+We specify the names of the parameters (or local variables) which correspond to files
+and have these objects passed to \Rfunc{addProvenance}.
+We can call the function as
+<<>>=
+mt = readData(system.file("sampleData",  "mtcars.rda", package = "rProv"))
+
+
+@ 
+The provenance information
+now contains information about the file that was read:
+<<>>=
+getProvInfo(mt)$files
+
+@ 
+This information comes from \Rfunc{file.info}
+and tells us about the creation and modification time.
+We also have the time the \R{} variable \Rvar{mt} was created, as usual,
+with 
+<<>>=
+getProvInfo(mt)$timestamp
+
+@ 
+The provenance information returned by \Rfunc{addProvenance}
+is currently different from that added by the top-level callback.
+This is very easy to change. The reason is that we are thinking
+of this type of information as being part of a sub-computation.
+
