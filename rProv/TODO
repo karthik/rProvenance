@@ -1,3 +1,5 @@
+Possibly use a NoSQL DB for storing information.
+
 When modifying a subset/sub-element of an object,  cumulate the commands so that we can see the original creation command
  So handle any assignment function, e.g. xmlAttrs<-(), attrs<-().
 
@@ -8,6 +10,12 @@ Actions on the capturing of file information.
   i.e. write some functions that check if the file has changed.
 
 Capture some (or all) of the inputs to a function.
+
+Command line arguments when commands are run as a script.
+
+Include the random seed in the provenance information for a command only if it is actually.
+  
+Is the random seed the one that was used or the value of the seed at the end of the evaluation of the command?
 
 Mechanism to instrument dynamic/run-time capturing
 of provenance, i.e. call stack on the returned objects and local variables.

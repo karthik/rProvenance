@@ -17,13 +17,16 @@ we store information about it such as
 the expression, the time, the type and class of the result.
 We can add this information to the result if
 the expression is an assignment.
+Alternatively, we can serialize the result to some storage (in memory in the R session, disk or a database)
+and associate the  key with the provenance information for that task/command. 
 </para>
 
 <para>
-By storing the history of calls,
-we can then use the static code analysis
-described below to compute the provenance information
-about the workflow after the event.
+By storing the history of calls, we can then use the static code
+analysis described below to compute the provenance information about
+the workflow after the event.
+We can use the static code analysis in real time to also determine the
+inputs.
 </para>
 
 

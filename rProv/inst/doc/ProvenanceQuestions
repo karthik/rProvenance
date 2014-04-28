@@ -4,6 +4,7 @@
    We can work with a collection of objects and Script obejct
    or one expression at a time.
    For example, consider the file inst/samples/formula.R file. 
+***Is this objectDepends.R in the top-level directory?
    We run this code (line-by-line) and then save fit1.
    We can save all the objects on which it depends also with
      provSave(fit1, file = "/tmp/fit1.rda") 
@@ -11,8 +12,11 @@
 
    When we load this into another R session, we can query how fit1 was
    created.
-   print(load("/tmp/fit1.rda"))
-   getCommands(fit1)
+   print(load("/tmp/fit1.rda"))  # reloads d, fit1, x, y
+   getProvInfo(fit1)
+
+
+#   getCommands(fit1)
 
    We should return the random.seed if necessary as an extra
    expression.
@@ -25,6 +29,8 @@
     info = getProvInfo(fit1)
     info$command
     invisible(lapply(info$command, eval, globalenv()))
+
+
 
 
 * When was this object last updated?
@@ -58,11 +64,14 @@
    See provenanceTrace( files = ...)
 
 * When we are reading blocks from a connection, we would like to know the beginning and end/number of bytes.
+   Can we call seek() at the start and end to determine the current locaiton.
+   This won't work for all connections, but it will for files.
 
 * When we read from a URL, etc. we want to capture the time and possibly the header information
   of the response. 
 
 * When we access a URL, we may need a cookie or token.
+  Also passwords, OAuth, etc.
 
 * How can we handle shell commands and know whether they would change if we ran them again
   Dependencies similar to make, but hard to capture comprehensively
@@ -73,4 +82,12 @@
        If we knew the file pattern (*.csv), we could capture their collective state and then determine if it has changed.
 
 
+
+* I want to do computations Y and Z. These need inputs
+
+* This object seems wrong. How can I determine why? i.e. how was it created.
+   (Example:  In the strava data, I was creating the activities.n.rda files with each containing
+       the variable activities.n where n is 1, 2, ..., 1000. Strangely, activities.38.rda contained
+       activities.31, not activities.38. )
+   
 

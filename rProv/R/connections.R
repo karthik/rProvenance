@@ -8,7 +8,7 @@ traceConnectionFun =
 function(fun, conName = names(formals(fun))[1], where = globalenv())
 {
    name = deparse(substitute(fun))
-browser()   
+
    b = body(fun)
    b[(1:length(b)) + 1L] = b
 

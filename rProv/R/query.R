@@ -8,7 +8,7 @@ function(obj)
 }
 
 setProvInfo =
-function(obj, info = getSessionProfInfo())
+function(obj, info = getSessionProvInfo())
 {
    # keep any fields already there that are not in info.
   old = getProvInfo(obj)

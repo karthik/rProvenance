@@ -1,4 +1,5 @@
 \documentclass[a4paper]{article}
+\VignetteIndexEntry{Overview}
 \usepackage[british]{babel}
 \begin{document}
 
@@ -12,6 +13,7 @@ We can capture information about
 objects we create at the top-level
 evaluation prompt using \Rfunc{startProv}.
 <<>>=
+library(rProv)
 cb = startProv()
 
 @ 
@@ -103,9 +105,17 @@ compute the dependencies from these,
 b) read the code from a file and create a script object
 and compute the dependencies,
 or c) use the history to compute a script.
-<<>>=
+<<eval=FALSE>>=
 sc = historyAsScript()
 sc.info = getInputs(sc)
+
+@ 
+Alternatively, for this vignette, we can read the commands from
+an \R{} code file:
+<<>>=
+library(CodeDepends)
+sc = readScript("simpleLM.R")
+
 
 @ 
 Now we can determine what needs to be updated if \Rvar{x} changes:
@@ -162,6 +172,8 @@ plot(x, y)
 dev.off()
 
 @ 
+<<>>=
+library(png)
 tmp = readPNG("myplot.png")
 info = c(date = as.character(Sys.time()),
          user = Sys.info()["login"],
